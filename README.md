@@ -49,6 +49,10 @@ http://127.0.0.1:8000/pemasukan
 ```
 
 ---
+Notes from Dev
+```
+Aplikasi ini masih dalam tahap pengembangan
+```
 ## Dependencies
 - Laravel - Sebagai Backend
 - Bootstrap 5 - Sebagai Frontend Framework
