@@ -30,6 +30,10 @@ Install semua dependencies menggunakan composer
 ```
 composer install
 ```
+Copy file `.env.example` menjadi `.env`
+```
+cp .env.example .env
+```
 Siapkan database kosong dan koneksikan database di dalam file .env\
 Jika sudah jalankan perintah migrasi data beserta seeding data nya
 ```
