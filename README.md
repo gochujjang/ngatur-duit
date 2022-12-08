@@ -60,4 +60,4 @@ Notes from Dev
 - Vite - Bundling Frontend untuk Laravel
 
 ## Contributor
-- Kelompok 2
+- Kelompok 3 TPT
