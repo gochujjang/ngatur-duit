@@ -8,7 +8,6 @@ Aplikasi ini bertujuan untuk mempermudah Bendahara kelas dalam mengelola uang ka
 ## Pre-requisite
 Adapun hal yang perlu disiapkan untuk menjalankan aplikasi ini :
 - Composer
-- NodeJS
 - PHP 8.1
 - MySQL 
 - xampp
@@ -43,13 +42,10 @@ Setelah itu jalankan local server
 ```
 php artisan serve
 ```
-dan
-```
-npm run dev
-```
+
 Anda dapat mengakses server di 
 ```
-http://127.0.0.1:8000/pemasukan
+http://127.0.0.1:8000/
 ```
 
 ---
@@ -61,7 +57,7 @@ Notes from Dev
 - Laravel - Sebagai Backend
 - Bootstrap 5 - Sebagai Frontend Framework
 - Bootstrap Icons - Icons
-- Vite - Bundling Frontend untuk Laravel
+- Maatwebsite/excel - Untuk export ke excel
 
 ## Contributor
 - Kelompok 3 TPT

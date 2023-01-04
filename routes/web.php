@@ -1,28 +1,25 @@
 <?php
 
-use App\Http\Controllers\PemasukanController;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PemasukanController;
+use App\Http\Controllers\PengeluaranController;
 
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+require __DIR__ . '/auth.php';
 
-// Melakukan routing ke root
-Route::resource('/pemasukan', PemasukanController::class);
+// Ketika mengakses root path "/" maka akan redirect ke /login
+Route::redirect('/', 'login');
+// Route untuk pengecekan middleware auth
+Route::middleware('auth')->group(function () {
+    // Route untuk controller dashboard
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    // Route untuk controller Pemasukan dan pengeluaran
+    Route::resource('/pemasukan', PemasukanController::class);
+    Route::resource('/pengeluaran', PengeluaranController::class);
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    // Route Export Excel
+    Route::get('/exportexcel', [PemasukanController::class, 'exportexcel'])->name('exportexcel');
+    Route::get('/exportexcel', [PengeluaranController::class, 'exportexcel'])->name('exportexcel');
+    
+});

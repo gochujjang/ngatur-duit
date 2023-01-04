@@ -2,54 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\mahasiswa;
+use App\Models\Pemasukan;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use App\Exports\PemasukanExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PemasukanController extends Controller
 {
-    /**
-     *
-     * @return \Illuminate\Http\Response
-     * Fungsi untuk menampilkan semua data
-     */
+    // Main function return ke Index
     public function index(Request $request)
     {
-        // Fungsi untuk fitur search mencari data
+        // Fungsi untuk mencari suatu data dan paginatornya
         $katakunci = $request->katakunci;
         $jumlahbaris = 5;
         if(strlen($katakunci)){
-            $data = mahasiswa::where('npm', 'like', "%$katakunci%")
+            $data = pemasukan::where('npm', 'like', "%$katakunci%")
                                 ->orWhere('nama','like',"%$katakunci%")
                                 ->orWhere('alamat','like',"%$katakunci%")
                                 ->paginate($jumlahbaris);
+            
         }else{
-           
-            $data = mahasiswa::orderBy('tanggalKas','desc')->paginate($jumlahbaris);
+            // Sorting data dan paginasi
+            $data = pemasukan::orderBy('tanggalKas','desc')->paginate($jumlahbaris);
+            // Menghitung total nominalKas Pemasukan
+            $totalPemasukan = pemasukan::select('nominalKas')->sum('nominalKas');
             
         }
-        // Mengambil data dari form create
-        return view('pemasukan.index')->with('data', $data);
+
+        // Mengembalikan data dari database
+        return view('pemasukan.index', [
+            'data' => $data,
+            'totalPemasukan' => $totalPemasukan
+        ]);
     }
 
-    /**
-     *
-     * @return \Illuminate\Http\Response
-     * Menampilkan Form untuk memasukan data
-     */
+    // Fungsi untuk create data
     public function create()
     {
-        return view('pemasukan.create');
+        return view('pemasukan');
     }
 
-    /**
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     * Fungsi untuk memasukan data yang baru ke database
-     */
+    // Fungsi untuk menyimpan data yang telah diinputkan
     public function store(Request $request)
     {
+        // Membuat session yang nantinya akan mengambil data
         Session::flash('npm', $request->npm);
         Session::flash('nama', $request->nama);
         Session::flash('alamat', $request->alamat);
@@ -58,7 +56,7 @@ class PemasukanController extends Controller
 
         // Proses validasi data
         $request->validate([
-            'npm'=>'required|numeric|unique:mahasiswa,npm',
+            'npm'=>'required|numeric|unique:pemasukan,npm',
             'nama'=>'required',
             'nominalKas'=>'required|numeric',
             'tanggalKas'=>'required|date',
@@ -79,41 +77,32 @@ class PemasukanController extends Controller
             'nominalKas' => $request->nominalKas,
             'tanggalKas' => $request->tanggalKas
         ];
-        mahasiswa::create($data);
+        pemasukan::create($data);
         // Melakukan redirect Kembali ke halaman utama dan menambahkan pesan success
         return redirect()->to('/pemasukan')->with('success','Berhasil menambahkan data');
     }
 
     /**
+     * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * Fungsi untuk menampilkan detail data
      */
     public function show($id)
     {
         //
     }
 
-    /**
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * Fungsi untuk menampilkan form untuk proses edit data
-     */
+    
+    // Fungsi untuk menampilkan form data yang nantinya akan 
+    // digunakan untuk mengedit suatu data
     public function edit($id)
     {
-        $data = mahasiswa::where('npm', $id)->first();
-        return view('pemasukan.edit')->with('data', $data);
+        $data = pemasukan::where('npm', $id)->first();
+        return view('pemasukan.modal.edit')->with('data', $data);
     }
 
-    /**
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * Fungsi update untuk menyimpan update data
-     */
+    // Fungsi untuk proses update setelah pengeditan
     public function update(Request $request, $id)
     {
         // Proses validasi data
@@ -134,20 +123,21 @@ class PemasukanController extends Controller
             'nominalKas' => $request->nominalKas,
             'tanggalKas' => $request->tanggalKas
         ];
-        mahasiswa::where('npm', $id)->update($data);
+        pemasukan::where('npm', $id)->update($data);
         // Melakukan redirect Kembali ke halaman utama dan menambahkan pesan success
         return redirect()->to('/pemasukan')->with('success','Berhasil melakukan update data');
     }
 
-    /**
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * Fungsi untuk penghapusan data
-     */
+    // Fungsi untuk menghapus data
     public function destroy($id)
     {
-        mahasiswa::where('npm', $id)->delete();
+        pemasukan::where('npm', $id)->delete();
         return redirect()->to('pemasukan')->with('success','Berhasil menghapus data');
     }
+    // Fungsi untuk export ke excel
+    public function exportexcel()
+    {
+        return Excel::download(new PemasukanExport, 'data-pemasukan.xlsx');
+    }
+
 }
