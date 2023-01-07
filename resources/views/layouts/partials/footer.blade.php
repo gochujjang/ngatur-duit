@@ -2,10 +2,10 @@
 <footer>
 	<div class="footer clearfix mb-0 text-muted">
 		<div class="float-start">
-			<p>{{ date('Y') }} &copy; Kelompok 2</p>
+			<p>{{ date('Y') }} &copy; Kelompok 3</p>
 		</div>
 		<div class="float-end">
-			<p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a href="#">Kelompok 2</a></p>
+			<p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a href="#">Kelompok 3</a></p>
 		</div>
 	</div>
 </footer>
